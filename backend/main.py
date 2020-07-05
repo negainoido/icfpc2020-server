@@ -1,9 +1,10 @@
 import os
 
-import icfpc2019.app as icfpc2019
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
+from icfpc2019 import app as icfpc2019
 
 app = FastAPI()
 

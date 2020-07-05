@@ -5,7 +5,7 @@ import sys
 from collections import OrderedDict
 from typing import List, Tuple
 
-import mysql.connector as db
+from mysql import connector as db
 
 DB_HOST = os.getenv("DB_HOST") or "localhost"
 DB_PORT = os.getenv("DB_PORT") or "3306"
