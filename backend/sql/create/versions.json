@@ -1,5 +1,8 @@
 {
     "create_problem" : [
         {"version" : 1, "release" : 0}
+    ],
+    "create_solution" : [
+        {"version" : 1, "release" : 0}
     ]
 }
