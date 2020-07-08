@@ -11,6 +11,7 @@ from icfpc2019 import app as icfpc2019
 app = FastAPI()
 cache = ExpiringDict(max_len=100, max_age_seconds=10)
 
+
 def load_secret_token():
     token = cache.get("SECRET_TOKEN")
     if token:
@@ -24,6 +25,7 @@ def load_secret_token():
     token = response.payload.data.decode("UTF-8")
     cache["SECRET_TOKEN"] = token
     return token
+
 
 @app.get("/api/v1/hello")
 async def index():
