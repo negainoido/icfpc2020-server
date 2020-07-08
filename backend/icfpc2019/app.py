@@ -117,6 +117,7 @@ async def solutions(task_id: int, solver: str):
                 INSERT INTO solution(`task_id`, `solver`) VALUES (%s, %s)
             """
             cur.execute(query, (task_id, solver))
+            conn.commit()
             id = cur.lastrowid
             obj = {}
             obj["id"] = id
