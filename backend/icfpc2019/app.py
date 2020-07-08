@@ -84,16 +84,14 @@ async def solutions(response: Response, page: int = 1):
             query = """
                 SELECT `id`, `task_id`, `solver`, `score` FROM solution
                 ORDER BY `task_id` ASC
-                LIMIT {} OFFSET {}
-            """.format(
-                page_size, page_offset
-            )
-            cur.execute(query)
+                LIMIT %s OFFSET %s
+            """
+            cur.execute(query, (page_size, page_offset))
             result = []
             for row in cur.fetchall():
                 obj = {}
                 obj["id"] = row[0]
-                obj["task_id"] = row[1]
+                obj["taskId"] = row[1]
                 obj["solver"] = row[2]
                 obj["score"] = row[3]
                 result.append(obj)
@@ -121,7 +119,7 @@ async def solutions(task_id: int, solver: str):
             id = cur.lastrowid
             obj = {}
             obj["id"] = id
-            obj["task_id"] = task_id
+            obj["taskId"] = task_id
             obj["solver"] = solver
             return obj
         finally:
