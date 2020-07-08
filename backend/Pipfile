@@ -5,12 +5,14 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
+mysql-connector-python = "==8.0.19"
 
 [packages]
-mysql-connector-python = "==8.0.19"
 pyyaml = "*"
 fastapi = {extras = ["all"],version = "*"}
 gunicorn = "*"
+google-cloud-secret-manager = "*"
+expiringdict = "*"
 
 [requires]
 python_version = "3.8"
