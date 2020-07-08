@@ -31,6 +31,15 @@ def get_problem_count(cur):
     return row[0]
 
 
+def get_solution_count(cur):
+    query = """
+        SELECT COUNT(*) FROM solution
+    """
+    cur.execute(query)
+    row = cur.fetchone()
+    return row[0]
+
+
 @router.get("/problems")
 async def problems(response: Response, page: int = 1):
     conn = db.connect(**dbconfig)
@@ -58,6 +67,61 @@ async def problems(response: Response, page: int = 1):
             response.headers["X-Page"] = str(page)
             response.headers["X-Total"] = str(get_problem_count(cur))
             return result
+        finally:
+            cur.close()
+    finally:
+        conn.close()
+
+
+@router.get("/solutions")
+async def solutions(response: Response, page: int = 1):
+    conn = db.connect(**dbconfig)
+    page_size = 20
+    page_offset = max(0, (page - 1) * page_size)
+    try:
+        cur = conn.cursor()
+        try:
+            query = """
+                SELECT `id`, `task_id`, `solver`, `score` FROM solution
+                ORDER BY `task_id` ASC
+                LIMIT %s OFFSET %s
+            """
+            cur.execute(query, (page_size, page_offset))
+            result = []
+            for row in cur.fetchall():
+                obj = {}
+                obj["id"] = row[0]
+                obj["taskId"] = row[1]
+                obj["solver"] = row[2]
+                obj["score"] = row[3]
+                result.append(obj)
+            response.headers["X-Page-Size"] = str(20)
+            response.headers["X-Page"] = str(page)
+            response.headers["X-Total"] = str(get_solution_count(cur))
+            return result
+        finally:
+            cur.close()
+    finally:
+        conn.close()
+
+
+@router.post("/solutions")
+async def solutions(task_id: int, solver: str):
+    conn = db.connect(**dbconfig)
+    try:
+        cur = conn.cursor()
+        try:
+            query = """
+                INSERT INTO solution(`task_id`, `solver`) VALUES (%s, %s)
+            """
+            cur.execute(query, (task_id, solver))
+            conn.commit()
+            id = cur.lastrowid
+            obj = {}
+            obj["id"] = id
+            obj["taskId"] = task_id
+            obj["solver"] = solver
+            return obj
         finally:
             cur.close()
     finally:
