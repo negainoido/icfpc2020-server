@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pipenv install --system
+RUN pipenv install --dev --system
 
 COPY icfpc2019/app.py ./icfpc2019/app.py
 COPY main.py .
