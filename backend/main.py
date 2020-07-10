@@ -1,10 +1,11 @@
 import os
+import datetime
 
 from expiringdict import ExpiringDict
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from google.cloud import secretmanager
+from fastapi.responses import JSONResponse, RedirectResponse
+from google.cloud import secretmanager, storage
 
 from icfpc2019 import app as icfpc2019
 
@@ -30,6 +31,19 @@ def load_secret_token():
 @app.get("/api/v1/hello")
 async def index():
     return {"message": "hello world!"}
+
+@app.get("/storage/{path:path}")
+async def get_storage(path: str):
+    bucket_id = os.getenv('BUCKET_ID')
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_id)
+    blob = bucket.blob(path)
+    url = blob.generate_signed_url(
+        version = "v4",
+        expiration=datetime.timedelta(minutes=15),
+        method="GET"
+    )
+    return RedirectResponse(url)
 
 
 @app.middleware("http")
