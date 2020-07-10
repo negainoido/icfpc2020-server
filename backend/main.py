@@ -1,5 +1,5 @@
-import os
 import datetime
+import os
 
 from expiringdict import ExpiringDict
 from fastapi import FastAPI, Request
@@ -32,16 +32,15 @@ def load_secret_token():
 async def index():
     return {"message": "hello world!"}
 
+
 @app.get("/storage/{path:path}")
 async def get_storage(path: str):
-    bucket_id = os.getenv('BUCKET_ID')
+    bucket_id = os.getenv("BUCKET_ID")
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_id)
     blob = bucket.blob(path)
     url = blob.generate_signed_url(
-        version = "v4",
-        expiration=datetime.timedelta(minutes=15),
-        method="GET"
+        version="v4", expiration=datetime.timedelta(minutes=15), method="GET"
     )
     return RedirectResponse(url)
 
