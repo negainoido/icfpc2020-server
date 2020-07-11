@@ -20,6 +20,8 @@
       color: #000;
     }
   }
+  list-style-type: none;
+
   li::marker {
     display: none;
     content: '';
