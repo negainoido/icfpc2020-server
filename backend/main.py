@@ -5,7 +5,7 @@ from expiringdict import ExpiringDict
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
-from google.cloud import secretmanager, storage
+from google.cloud import secretmanager
 
 from icfpc2019 import app as icfpc2019
 
@@ -36,12 +36,7 @@ async def index():
 @app.get("/storage/{path:path}")
 async def get_storage(path: str):
     bucket_id = os.getenv("BUCKET_ID")
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_id)
-    blob = bucket.blob(path)
-    url = blob.generate_signed_url(
-        version="v4", expiration=datetime.timedelta(minutes=15), method="GET"
-    )
+    url = 'https://storage.cloud.google.com/%s/%s' % (bucket_id, path)
     return RedirectResponse(url)
 
 
