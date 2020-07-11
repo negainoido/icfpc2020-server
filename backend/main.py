@@ -36,7 +36,7 @@ async def index():
 @app.get("/storage/{path:path}")
 async def get_storage(path: str):
     bucket_id = os.getenv("BUCKET_ID")
-    url = 'https://storage.cloud.google.com/%s/%s' % (bucket_id, path)
+    url = "https://storage.cloud.google.com/%s/%s" % (bucket_id, path)
     return RedirectResponse(url)
 
 
