@@ -13,6 +13,7 @@ fastapi = {extras = ["all"],version = "*"}
 gunicorn = "*"
 google-cloud-secret-manager = "*"
 expiringdict = "*"
+google-cloud-storage = "*"
 
 [requires]
 python_version = "3.8"
