@@ -1,10 +1,10 @@
 import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import {makeStyles} from '@material-ui/core/styles';
+import {StyledTableCell, StyledTableRow} from '../components/styledComponents';
 
 export interface Solution {
     id: string;
@@ -17,29 +17,33 @@ interface Props {
     solutions: Solution[];
 }
 
+const useStyles = makeStyles({ table: {}});
+
 const Solutions = (props:Props) => {
     const { solutions } = props;
+    const classes = useStyles();
+
     return (
         <TableContainer>
-            <Table>
+            <Table className={classes.table}>
                 <TableHead>
-                    <TableRow>
-                        <TableCell>Task ID</TableCell>
-                        <TableCell>Solution ID</TableCell>
-                        <TableCell>Solver</TableCell>
-                        <TableCell>Score</TableCell>
-                        <TableCell>Download Solution</TableCell>
-                    </TableRow>
+                    <StyledTableRow>
+                        <StyledTableCell>Task ID</StyledTableCell>
+                        <StyledTableCell>Solution ID</StyledTableCell>
+                        <StyledTableCell>Solver</StyledTableCell>
+                        <StyledTableCell>Score</StyledTableCell>
+                        <StyledTableCell>Download Solution</StyledTableCell>
+                    </StyledTableRow>
                 </TableHead>
                 <TableBody>
                     {solutions.map((solution, i) =>
-                        <TableRow key={i}>
-                            <TableCell>{solution.id}</TableCell>
-                            <TableCell>{solution.taskId}</TableCell>
-                            <TableCell>{solution.solver}</TableCell>
-                            <TableCell>{solution.score}</TableCell>
-                            <TableCell> - </TableCell>
-                        </TableRow>
+                        <StyledTableRow key={i}>
+                            <StyledTableCell>{solution.taskId}</StyledTableCell>
+                            <StyledTableCell>{solution.id}</StyledTableCell>
+                            <StyledTableCell>{solution.solver}</StyledTableCell>
+                            <StyledTableCell>{solution.score || '-'}</StyledTableCell>
+                            <StyledTableCell> - </StyledTableCell>
+                        </StyledTableRow>
                     )}
                 </TableBody>
             </Table>
