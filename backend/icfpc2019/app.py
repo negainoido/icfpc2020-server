@@ -1,9 +1,9 @@
 import os
+from typing import TextIO
 
-from fastapi import APIRouter, Response, UploadFile, File
+from fastapi import APIRouter, File, Response, UploadFile
 from google.cloud import storage
 from mysql import connector as db
-from typing import TextIO
 
 dbconfig = {
     "database": os.getenv("DB_NAME") or "icfpc2019",
@@ -106,6 +106,7 @@ async def get_solutions(response: Response, page: int = 1):
     finally:
         conn.close()
 
+
 def upload_to_storage(from_file: TextIO, path: str):
     bucket_id = os.getenv("BUCKET_ID")
     client = storage.Client()
@@ -113,20 +114,21 @@ def upload_to_storage(from_file: TextIO, path: str):
     blob = bucket.blob(path)
     blob.upload_from_file(from_file)
 
+
 @router.post("/solutions")
 async def post_solution(task_id: int, solver: str, file: UploadFile = File(None)):
     conn = db.connect(**dbconfig)
     try:
         cur = conn.cursor()
         try:
-            
+
             query = """
                 INSERT INTO solution(`task_id`, `solver`) VALUES (%s, %s)
             """
             cur.execute(query, (task_id, solver))
             conn.commit()
             id = cur.lastrowid
-            filepath = 'icfpc2019/solutions/solution_{}_{}.txt'.format(task_id, id)
+            filepath = "icfpc2019/solutions/solution_{}_{}.txt".format(task_id, id)
             upload_to_storage(file.file, filepath)
             update_query = """
                 UPDATE solution
@@ -134,7 +136,7 @@ async def post_solution(task_id: int, solver: str, file: UploadFile = File(None)
                   WHERE `id` = %s
             """
             cur.execute(update_query, (filepath, id))
-            
+
             obj = {}
             obj["id"] = id
             obj["taskId"] = task_id
