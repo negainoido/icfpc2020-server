@@ -107,11 +107,13 @@ async def get_solutions(response: Response, page: int = 1):
         conn.close()
 
 
-def upload_to_storage(from_file: TextIO, path: str):
+def upload_to_storage(from_file: TextIO, path: str, overwrite: bool = True):
     bucket_id = os.getenv("BUCKET_ID")
     client = storage.Client()
     bucket = client.bucket(bucket_id)
     blob = bucket.blob(path)
+    if not overwrite and blob.exists():
+        raise Exception('blob already exists: ' + path)
     blob.upload_from_file(from_file)
 
 
