@@ -6,6 +6,10 @@ services:
       - "8000:80"
     environment:
       DB_HOST: mysql
+      GOOGLE_APPLICATION_CREDENTIALS: /secret/negainoido-icfpc-development-key.json
+      BUCKET_ID: negainoido-icfpc-2020-test
+    volumes:
+       - ./secret:/secret
   mysql:
     image: mysql:5.7
     container_name: negainoido-mysql
