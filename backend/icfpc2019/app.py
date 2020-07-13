@@ -113,7 +113,7 @@ def upload_to_storage(from_file: TextIO, path: str, overwrite: bool = True):
     bucket = client.bucket(bucket_id)
     blob = bucket.blob(path)
     if not overwrite and blob.exists():
-        raise Exception('blob already exists: ' + path)
+        raise Exception("blob already exists: " + path)
     blob.upload_from_file(from_file)
 
 
