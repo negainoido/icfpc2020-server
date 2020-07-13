@@ -4,5 +4,8 @@
     ],
     "create_solution" : [
         {"version" : 1, "release" : 0}
+    ],
+    "alter_solution" : [
+        {"version": 1, "release": 0}
     ]
 }

@@ -1,6 +1,8 @@
 import os
+from typing import TextIO
 
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, File, Response, UploadFile
+from google.cloud import storage
 from mysql import connector as db
 
 dbconfig = {
@@ -74,7 +76,7 @@ async def problems(response: Response, page: int = 1):
 
 
 @router.get("/solutions")
-async def solutions(response: Response, page: int = 1):
+async def get_solutions(response: Response, page: int = 1):
     conn = db.connect(**dbconfig)
     page_size = 20
     page_offset = max(0, (page - 1) * page_size)
@@ -105,23 +107,47 @@ async def solutions(response: Response, page: int = 1):
         conn.close()
 
 
+def upload_to_storage(from_file: TextIO, path: str, overwrite: bool = True):
+    bucket_id = os.getenv("BUCKET_ID")
+    client = storage.Client()
+    bucket = client.bucket(bucket_id)
+    blob = bucket.blob(path)
+    if not overwrite and blob.exists():
+        raise Exception("blob already exists: " + path)
+    blob.upload_from_file(from_file)
+
+
 @router.post("/solutions")
-async def solutions(task_id: int, solver: str):
+async def post_solution(task_id: int, solver: str, file: UploadFile = File(None)):
     conn = db.connect(**dbconfig)
     try:
         cur = conn.cursor()
         try:
+
             query = """
                 INSERT INTO solution(`task_id`, `solver`) VALUES (%s, %s)
             """
             cur.execute(query, (task_id, solver))
             conn.commit()
             id = cur.lastrowid
+            filepath = "icfpc2019/solutions/solution_{}_{}.txt".format(task_id, id)
+            upload_to_storage(file.file, filepath)
+            update_query = """
+                UPDATE solution
+                  SET `solution_file` = %s
+                  WHERE `id` = %s
+            """
+            cur.execute(update_query, (filepath, id))
+
             obj = {}
             obj["id"] = id
             obj["taskId"] = task_id
             obj["solver"] = solver
+            obj["file"] = filepath
             return obj
+        except Exception as e:
+            conn.rollback()
+            raise e
         finally:
             cur.close()
     finally:
