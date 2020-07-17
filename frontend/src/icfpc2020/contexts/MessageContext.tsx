@@ -1,8 +1,20 @@
 import React from 'react';
 import {MessageType} from '../components/MessageSnack';
 
-interface MessageContextProps {
+export interface MessageContextProps {
     sendMessage: (type: MessageType, text: string) => void;
 }
 
-export default React.createContext<MessageContextProps>({ sendMessage: () => {}});
+const MessageContext = React.createContext<MessageContextProps>({ sendMessage: () => {}});
+
+export const withMessageContext = <P,>(RC: React.ComponentType<P>) => {
+    return (props: P) => {
+        return (
+            <MessageContext.Consumer>
+                {(context) => <RC {...props} {...context}/>}
+            </MessageContext.Consumer>
+        );
+    };
+};
+
+export default MessageContext;

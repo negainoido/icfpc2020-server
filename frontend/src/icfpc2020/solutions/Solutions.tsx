@@ -7,8 +7,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import {StyledTableCell, StyledTableRow} from '../components/styledComponents';
 
 export interface Solution {
-    id: string;
-    taskId: string;
+    id: number;
+    taskId: number;
     solver: string;
     score: number;
 }
