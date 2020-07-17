@@ -7,6 +7,7 @@ import MessageContext from './contexts/MessageContext';
 import { useRouteMatch } from 'react-router';
 import NavBar from './components/NavBar';
 import SolutionWrapper from './solutions/SolutionsWrapper';
+import CompareBoardWrapper from './solutions/CompareBoardWrapper';
 
 interface State {
     messages: Message[];
@@ -44,6 +45,7 @@ const clearMessage = (prevState: State, id: number) => {
 const pages = [
     {label: 'Problems', path: '/'},
     {label: 'Solutions', path: '/solutions'},
+    {label: 'Compare', path: '/compare'},
 ];
 
 const App = () => {
@@ -64,6 +66,7 @@ const App = () => {
                 <NavBar pages={pages}/>
                 <Switch>
                     <Route exact path={`${path}/solutions`} component={SolutionWrapper}/>
+                    <Route exact path={`${path}/compare`} component={CompareBoardWrapper}/>
                     <Route exact path={`${path}/`} component={ProblemsWrapper}/>
                     <Redirect to={`${path}/`}/>
                 </Switch>
