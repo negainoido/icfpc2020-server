@@ -12,8 +12,8 @@ export const fetchSolutions = (page: number) => {
 }
 
 export const fetchSolutionsBySolver = (solver: string, page: number = 1) => {
-    const url = new URL("/v1/icfpc2019/solutions", process.env.REACT_APP_API_URL);
-    url.searchParams.append("solver", solver);
+    const url = new URL("/api/v1/icfpc2019/solutions", process.env.REACT_APP_API_URL);
+    //url.searchParams.append("solver", solver);
     url.searchParams.append("page", page.toString());
     return fetch(url.href)
         .then((response) => {
